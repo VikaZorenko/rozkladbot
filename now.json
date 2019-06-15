@@ -1,5 +1,5 @@
 {
-    "version": 1,
+    "version": 2,
     "name": "scholarship-bot",
     "builds": [{ "src": "index.js", "use": "@now/node", "config": { "maxLambdaSize": "45mb" }}],
     "routes": [{

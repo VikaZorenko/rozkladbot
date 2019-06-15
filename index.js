@@ -9,7 +9,7 @@ const hostname = 'rozklad.kpi.ua';
 const bot = new Telegraf(process.env.TGBOT_TOKEN);
 
 // Storage of group names per chat
-const groups = { '390847124': 'ІП-72' };
+const groups = {};
 
 // on first interaction
 bot.start(({ reply }) =>
