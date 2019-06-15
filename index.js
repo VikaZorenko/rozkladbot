@@ -8,6 +8,7 @@ const http = require('http');
 const hostname = 'rozklad.kpi.ua';
 const bot = new Telegraf(process.env.TGBOT_TOKEN);
 
+
 // Storage of group names per chat
 const groups = {};
 
@@ -100,9 +101,11 @@ bot.command('all', ({ reply, update }) => {
   });
 })
 
+bot.telegram.setWebhook('scholarship-bot.zorenkovika.now.sh/heyman');
+
+bot.startWebhook('/heyman', null, 5000);
 
 bot.launch().then(() => console.log('bot started'));
-
 
 function hasGroup(prefixText, callback) {
   const json = { count: 10, prefixText };
