@@ -4,9 +4,11 @@ node_js:
 cache:
   - npm
 before_script:
-  - npm ci
+  - npm i
+before_deploy:
+  - npm install now --no-save
 script: 
   - npm run lint
   - npm run test
   - npm run build
-  - now -e TGBOT_TOKEN=@btoken
+  - now -e TGBOT_TOKEN=@btoken --token DcRXyFqhyGhLSm80fcvVWrua

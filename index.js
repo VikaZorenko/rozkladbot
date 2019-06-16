@@ -107,9 +107,7 @@ bot.startWebhook('/heyman', null, 5000);
 
 bot.launch().then(() => console.log('bot started'));
 
-console.log('asdasdasdafiarbhgiaerhgiuzaerhgiaerhgoierahgoieahrgoiauhergoiearhgoiearhgiaherghaerhgaierhgiaerhg');
-
-http.createServer((req, res) => {res.end('YAY')}).listen(process.env.PORT)
+http.createServer((req, res) => {res.end('YAY')}).listen(process.env.PORT);
 
 function hasGroup(prefixText, callback) {
   const json = { count: 10, prefixText };
