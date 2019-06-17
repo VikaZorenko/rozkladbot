@@ -11,4 +11,4 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - now -e TGBOT_TOKEN=@btoken --token DcRXyFqhyGhLSm80fcvVWrua
+  - now run now
