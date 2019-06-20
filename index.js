@@ -8,8 +8,9 @@ const http = require('http');
 const hostname = 'rozklad.kpi.ua';
 const bot = new Telegraf(process.env.TGBOT_TOKEN);
 
+
 // Storage of group names per chat
-const groups = {};
+const groups = {"389124173": "ІП-72"};
 
 // on first interaction
 bot.start(({ reply }) =>
@@ -26,12 +27,12 @@ bot.command('setgroup', ctx => {
   // Checks if there is a group with this name on server
   hasGroup(group, result => {
     // It gives out a list of suggestions, and if we have our group in there it exists
-    if (result.includes(group)) {
+    if (result && result.includes(group)) {
       groups[ctx.update.message.chat.id] = group;
       ctx.reply('Group saved!');
     } else {
       // Why not giving out a list of possible suggestions?
-      ctx.reply('No such group! ' + (result.length ? `Try: ${result.join(', ')}` : ''))
+      ctx.reply('No such group! ' + (result && result.length ? `Try: ${result.join(', ')}` : ''))
     }
   });
 })
@@ -72,12 +73,17 @@ bot.command('all', ({ reply, update }) => {
   }
 
   getPage(group, ({ window }) => {
-    const timetable = [
-      window.document.getElementById('ctl00_MainContent_FirstScheduleTable').firstElementChild,
-      window.document.getElementById('ctl00_MainContent_SecondScheduleTable').firstElementChild,
+    const tableElements = [
+      window.document.getElementById('ctl00_MainContent_FirstScheduleTable'),
+      window.document.getElementById('ctl00_MainContent_SecondScheduleTable'),
     ];
+    if (!tableElements.every(Boolean)) {
+      reply('Got a bad response from rozklad.kpi.ua. Try again a bit later please');
+      return;
+    }
+    const timetable = tableElements.map(el => el.firstElementChild);
     timetable.forEach((tt, weekno) => {
-      let pairsrows = Array.from(tt.childNodes) // table rows
+      let pairsrows = Array.from(tt ? tt.childNodes : []) // table rows
         .map(pair => Array.from(pair.childNodes) // to arrays of table cells
           .filter((el, i, arr) => i && i !== arr.length - 1)); // filtering out text elements (first and last)
       const weekdays = pairsrows.shift(); // first row is weekdays
@@ -100,9 +106,22 @@ bot.command('all', ({ reply, update }) => {
   });
 })
 
+bot.telegram.setWebhook('scholarship-bot.zorenkovika.now.sh/heyman');
+
+bot.startWebhook('/heyman', null, 5000);
 
 bot.launch().then(() => console.log('bot started'));
 
+http.createServer((req, res) => {
+  res.write('Hello World!');
+  res.end();
+}).listen(process.env.PORT || 3000, () => {
+ console.log("server start at port 3000"); 
+});
+
+module.exports = (req, res) => {
+  res.end('Welcome to my API')
+}
 
 function hasGroup(prefixText, callback) {
   const json = { count: 10, prefixText };
@@ -113,6 +132,9 @@ function hasGroup(prefixText, callback) {
 }
 
 function getInfo(tableCell) {
+  if (!tableCell) {
+    return '';
+  }
   // The info is in the anchor elements of the td
   const info = Array.from(tableCell.getElementsByClassName('plainLink')).map(el => el.textContent).join(', ');
   // Time time is in start of the row, so we go there via a parent
