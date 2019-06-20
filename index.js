@@ -112,7 +112,16 @@ bot.startWebhook('/heyman', null, 5000);
 
 bot.launch().then(() => console.log('bot started'));
 
-http.createServer((req, res) => {res.end('YAY')}).listen(process.env.PORT);
+http.createServer((req, res) => {
+  res.write('Hello World!');
+  res.end();
+}).listen(process.env.PORT || 3000, () => {
+ console.log("server start at port 3000"); 
+});
+
+module.exports = (req, res) => {
+  res.end('Welcome to my API')
+}
 
 function hasGroup(prefixText, callback) {
   const json = { count: 10, prefixText };
